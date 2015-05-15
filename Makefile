@@ -1,4 +1,4 @@
 n:
-	@cc -o $@ n.c -std=c99
+	@cc -o $@ n.c -std=c99 -g
 
 .PHONY: n
