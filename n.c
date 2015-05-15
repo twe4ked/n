@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define FILE_NAME "storage"
+#define FILE_NAME "n"
 #define MAX_STRING 512
 
 struct notes* initialize_notes(char value[]);
@@ -13,6 +13,7 @@ void error(char *message);
 int delete(int index);
 void read_notes();
 void save_notes();
+void file_name(char *buffer);
 
 struct notes {
   char value[MAX_STRING];
@@ -155,7 +156,9 @@ void print_notes() {
 }
 
 void read_notes() {
-  FILE *file = fopen(FILE_NAME, "r");
+  char fn[MAX_STRING];
+  file_name(fn);
+  FILE *file = fopen(fn, "r");
 
   if (file == NULL)
     return;
@@ -175,7 +178,9 @@ void read_notes() {
 
 /* TODO: don't create a file if there are no notes to save */
 void save_notes() {
-  FILE *file = fopen(FILE_NAME, "w");
+  char fn[MAX_STRING];
+  file_name(fn);
+  FILE *file = fopen(fn, "w");
 
   struct notes *ptr = head;
   while (ptr != NULL) {
@@ -187,5 +192,16 @@ void save_notes() {
     putc('\n', file);
 
     ptr = ptr->next;
+  }
+}
+
+void file_name(char *buffer) {
+  if (getenv("N_FILE") == NULL) {
+    snprintf(buffer, MAX_STRING, "%s/.%s",
+      getenv("HOME"),
+      FILE_NAME
+    );
+  } else {
+    snprintf(buffer, MAX_STRING, "%s", getenv("N_FILE"));
   }
 }
